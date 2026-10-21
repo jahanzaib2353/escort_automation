@@ -1,0 +1,170 @@
+// ==UserScript==
+// @name         Lector Captcha - Al Clic de Reporte (Upgraded)
+// @namespace    http://tampermonkey.net/
+// @version      2.0
+// @description  Auto-solves drome6 image captcha and bypasses Cloudflare Turnstile after report submission.
+// @author       You
+// @match        *://*.listcrawler.eu/*
+// @match        *://*.escortalligator.com/*
+// @grant        GM_xmlhttpRequest
+// @connect      2captcha.com
+// @connect      captcha.drome6.com
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // ⚠️ REPLACE THIS WITH YOUR ACTUAL 2CAPTCHA API KEY
+    const API_KEY = 'c9c7b1bfdaaf95227adb1e413c7413bd'; 
+
+    console.log("✅ CAPTCHA Solver Script Loaded.");
+
+    // 1. Watch for the Report Modal to open
+    const modalObserver = new MutationObserver((mutations, obs) => {
+        const modal = document.querySelector('.report-modal');
+        if (modal && modal.style.display !== 'none') {
+            console.log("📝 Report modal detected. Waiting for captcha image...");
+            obs.disconnect(); // Stop watching once found
+            setTimeout(waitForCaptchaAndSolve, 2000); // Wait 2s for modal to fully render
+        }
+    });
+
+    // Start watching the body for the modal
+    modalObserver.observe(document.body, { childList: true, subtree: true });
+
+    // 2. Watch for Cloudflare Challenge after submission
+    const cfObserver = new MutationObserver((mutations, obs) => {
+        const cfText = document.querySelector('p[id="zezB9"]');
+        if (cfText && cfText.innerText.includes("security service")) {
+            console.log("️ Cloudflare Challenge detected! Attempting auto-bypass...");
+            obs.disconnect();
+            setTimeout(bypassCloudflare, 1500);
+        }
+    });
+    cfObserver.observe(document.body, { childList: true, subtree: true });
+
+
+    // --- CAPTCHA SOLVING LOGIC ---
+    function waitForCaptchaAndSolve() {
+        const img = document.getElementById('captcha_image_itself') || 
+                    document.querySelector('img[src*="captcha.drome6.com/captchas/"]');
+
+        if (img && img.src) {
+            console.log("️ Captcha image found: " + img.src);
+            getBase64(img.src).then(base64 => {
+                sendTo2Captcha(base64);
+            }).catch(err => console.error("Failed to get base64:", err));
+        } else {
+            console.error("❌ Captcha image not found in modal.");
+        }
+    }
+
+    function getBase64(url) {
+        return new Promise((resolve, reject) => {
+            GM_xmlhttpRequest({
+                method: "GET",
+                url: url,
+                responseType: "blob",
+                onload: (res) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                    reader.readAsDataURL(res.response);
+                },
+                onerror: reject
+            });
+        });
+    }
+
+    function sendTo2Captcha(base64) {
+        GM_xmlhttpRequest({
+            method: "POST",
+            url: "https://2captcha.com/in.php",
+            data: `key=${API_KEY}&method=base64&body=${encodeURIComponent(base64)}&json=1`,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            onload: (res) => {
+                try {
+                    const data = JSON.parse(res.responseText);
+                    if (data.status === 1) {
+                        console.log(" Sent to 2Captcha. Task ID:", data.request);
+                        pollForResult(data.request);
+                    } else {
+                        console.error("2Captcha submit error:", data.request);
+                    }
+                } catch (e) { console.error("JSON parse error:", e); }
+            }
+        });
+    }
+
+    function pollForResult(id) {
+        let attempts = 0;
+        const maxAttempts = 24; // 24 * 5s = 120 seconds timeout
+
+        const poll = setInterval(() => {
+            attempts++;
+            if (attempts > maxAttempts) {
+                clearInterval(poll);
+                console.error("⏱️ 2Captcha polling timed out after 120s.");
+                return;
+            }
+
+            GM_xmlhttpRequest({
+                method: "GET",
+                url: `https://2captcha.com/res.php?key=${API_KEY}&action=get&id=${id}&json=1`,
+                onload: (res) => {
+                    try {
+                        const data = JSON.parse(res.responseText);
+                        if (data.status === 1) {
+                            clearInterval(poll);
+                            const solution = data.request;
+                            console.log("✅ Solution received:", solution);
+                            
+                            // Fill the correct input field
+                            const input = document.querySelector('#captcha_code') || 
+                                          document.querySelector('input[name="captchaCode"]');
+                            if (input) {
+                                input.value = solution;
+                                input.dispatchEvent(new Event('input', { bubbles: true }));
+                                input.style.border = "3px solid #00FF00";
+                                console.log("✍️ Captcha code filled successfully.");
+                            } else {
+                                console.error(" Could not find captcha input field to fill.");
+                            }
+                        } else if (data.request !== "CAPCHA_NOT_READY") {
+                            clearInterval(poll);
+                            console.error("2Captcha polling error:", data.request);
+                        }
+                    } catch (e) { console.error("Poll JSON parse error:", e); }
+                }
+            });
+        }, 5000);
+    }
+
+
+    // --- CLOUDFLARE BYPASS LOGIC ---
+    function bypassCloudflare() {
+        // Look for the Cloudflare iframe
+        const iframe = document.querySelector('iframe[src*="challenges.cloudflare.com"]');
+        if (iframe) {
+            console.log("🔍 Found Cloudflare iframe. Attempting to click checkbox...");
+            try {
+                // Access iframe content (might be blocked by cross-origin, but worth trying)
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const checkbox = iframeDoc.querySelector('input[type="checkbox"]') || 
+                                 iframeDoc.querySelector('.cb-lb');
+                if (checkbox) {
+                    checkbox.click();
+                    console.log("️ Clicked Cloudflare checkbox inside iframe.");
+                }
+            } catch (e) {
+                // If cross-origin blocks us, try clicking the iframe element itself or its container
+                console.log("⚠️ Cross-origin blocked direct access. Trying fallback click...");
+                iframe.click(); 
+                // Also try clicking the parent container which sometimes triggers it
+                if(iframe.parentElement) iframe.parentElement.click();
+            }
+        } else {
+            console.log("ℹ️ No Cloudflare iframe found. Challenge might be invisible/auto-resolving.");
+        }
+    }
+
+})();

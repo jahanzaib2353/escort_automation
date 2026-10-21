@@ -1,0 +1,50 @@
+Integrated spectral image registration protocol for enhanced land pollution assessment and management: bridging satellite and drone data for high-resolution mapping
+Cross-Track Illumination Correction for Hyperspectral Pushbroom Sensor Images Using Low-Rank and Sparse Representations
+Deep learning-based hyperspectral and multispectral fusion techniques: Review, optimization, and perspectives
+An Integrated Approach to Registration and Fusion of Hyperspectral and Multispectral Images
+Spectral smile correction for airborne imaging spectrometers
+Digital Correction of Spatial–Spectral Aberrations in a Mobile Hyperspectral System
+Boosting Structure Consistency for Multispectral and Multimodal Image Registration
+Comparing area-based and feature-based methods for co-registration of multispectral bands on
+Correction of Radiometric Steps at Dual-Sensor Imaging Spectrometer Detector Joints
+Proceedings of the 15th International Joint Conference on Computer Vision,  Imaging and Computer Graphics Theory and Applications
+UAV-Multispectral Sensed Data Band Co-Registration Framework
+Assessing the adequability of FFT-based methods on registration of UAV-multispectral images
+Altum agricultural multispectral camera near-ground channel registration method
+Imaging the point spread function of hyperspectral cameras - the full truth about coregistration error and resolution
+Multispectral image registration parameter calibration method based on pyramid mixture model
+Alignment of Multi-Camera Spectral Images Using Wavelet Transform
+Enhanced Multispectral Band-to-Band Registration Using Co-Occurrence Scale Space and Spatial Confined RANSAC Guided Segmented Affine Transformation
+Fast Edge-Aware Occlusion Detection in the Context of Multispectral Camera Arrays
+Robust Estimation and Correction of Spectral Smile in Hyperspectral Imagery Using Image-Derived Modeling
+Multispectral Snapshot Image Registration Using Learned Cross Spectral Disparity Estimation and a Deep Guided Occlusion Reconstruction Network
+A High-Resolution Hyperspectral Camera with Robust Single-Image Calibration for Pixel Registration and Distortion Correction
+RPM: Robust PAN-Sharpening With Multispectral Misalignment Correction
+Multispectral Image Matching Method Based on Histogram of Maximum Gradient and Edge Orientation
+
+Linlks
+https://www.scopus.com/pages/publications/85147317265?origin=resultslist
+https://www.scopus.com/pages/publications/86000426443?origin=resultslist
+https://www.scopus.com/pages/publications/105007143973?origin=resultslist
+https://www.scopus.com/pages/publications/85084108815?origin=resultslist
+https://www.scopus.com/pages/publications/85082507736?origin=resultslist
+https://www.scopus.com/pages/publications/105037436854?origin=resultslist
+https://www.scopus.com/pages/publications/85124851527?origin=resultslist
+https://www.scopus.com/pages/publications/85127844631?origin=resultslist
+https://www.scopus.com/pages/publications/85186267564?origin=resultslist
+https://www.scopus.com/pages/publications/85186267564?origin=resultslist
+https://www.scopus.com/pages/publications/85083578749?origin=resultslist
+https://www.scopus.com/pages/publications/85089138655?origin=resultslist
+https://www.scopus.com/pages/publications/85083565751?origin=resultslist
+https://www.scopus.com/pages/publications/85141858563?origin=resultslist
+https://www.scopus.com/pages/publications/85141858563?origin=resultslist
+https://www.scopus.com/pages/publications/85178296361?origin=resultslist
+https://www.scopus.com/pages/publications/85147681031?origin=resultslist
+https://www.scopus.com/pages/publications/85197812465?origin=resultslist
+https://www.scopus.com/pages/publications/85210040744?origin=resultslist
+https://www.scopus.com/pages/publications/85216851205?origin=resultslist
+https://www.scopus.com/pages/publications/105045246937?origin=resultslist
+https://www.scopus.com/pages/publications/105003743676?origin=resultslist
+https://www.scopus.com/pages/publications/105023695147?origin=resultslist
+https://www.scopus.com/pages/publications/105029914696?origin=resultslist
+https://www.scopus.com/pages/publications/85107230359?origin=resultslist
